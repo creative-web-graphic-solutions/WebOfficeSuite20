@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ecommerce CRM</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+{% load static %}
+<link rel="stylesheet"  href=" {% static "mystyle.css" %}">
+</head>
+<body background='static/CRM2.jpg'>
+	
+	<nav class='navbar navbar-default navbar-static-top'>
+	<div class="container "> 
+		<ul class='nav navbar-nav'>
+			<li><a class='navbar-brand' href="{% url 'home' %}" style="color: Green; font-size: 40px">Home
+			</a></li>
+			<li><a class='navbar-link' href="{% url 'product management' %}" style="color: blue, font-size:20px"> Product Management</a></li>
+			<li><a class='navbar-link' href="{%url 'Order management' %}" style="color: blue, font-size:20px"> Order Management</a></li>
+			<li><a class='navbar-link' href="{%url 'Payment Information' %}" style="color: blue, font-size:20px">Payment Information</a></li>
+		</ul>	
+	</div>	
+	</nav>
+	
+<div class="container" >
+	   {% block body_block %} 
+
+	   {% endblock %}
+	   
+</div>
+</body>
+</html>
+

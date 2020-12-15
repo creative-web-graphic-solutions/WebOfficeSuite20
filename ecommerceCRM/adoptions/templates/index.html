@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>myapp</title>
+</head>
+<body>
+<h2>Simplest Crud Example</h2>
+<p>This shows a list of names and lets you Create, Update and Delete them.</p>
+{% if names_from_context %}
+<ul>
+{% for item in amazonitem %}
+<li>{{ item.id }} <button>Delete</button>
+<button>Update</button></li>
+{% endfor %}
+</ul>
+{% else %}
+<h3>Please go to the admin and add a Name under 'MYAPP'</h3>
+{% endif %}
+<h3>Add a Name</h3>
+<form id="name_form" method="post" action="/">
+{% csrf_token %}
+{% for item in amazonitem %}
+{{ item.id }}
+{{ item.SKU }}
+{{ item.Description }}
+<input type="submit" name="submit" value="Update">
+</br>
+{% endfor %}
+
+</form>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+<!-- {% load i18n admin_urls %} -->
+<!-- {% load sorting %} -->
+
+{% block body_block %}
+
+<div> 
+  <h2 style="color: green">Periodic Payment Details </h2>
+  <!-- <h3 style="color:yellow"> <a href="{% url 'home' %}">  Home  </h3>  <br> -->
+  	
+<input type="submit" value="{% trans 'Sort by Payment Date' %}" name="datebutton" {{ paydatesort }} onclick="{{pymdate}" />
+
+<input type="submit" value="Sort by Payment Status" id="paystatus"/>
+
+
+<!-- <script type="text/javascript">
+$document.ready(function)
+{ $("#paystatus").click(function(){
+
+   $('#pay_state').html('<img src="static/CRM.jpg" width="300" height="70"> Processing')
+
+}
+</script> -->
+
+
+<!-- {% if documents %} -->
+
+
+  <div style = "display:inline-block; position:absolute; height:320px; top: 430px ;left:500px; width:550px", id="car_ex">
+
+  <p> <input type="submit" value="Click to start Assessment" style="background-color : Yellow; height:50px;" id="image_process"> </p>
+  
+  <img src="{{ image_path1 }}" alt="" style ="position:absolute;height:350px; top:80px; left:500px; width:550px; border: #000000 6px outset" >
+
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $("#image_process").click(function(){
+
+      $('#car_ex').html('<img src="/static/car_run2.gif" width ="300" height="70"> Processing the Image of your Car')
+
+      $.ajax({url: "/engine/",
+             type : 'get',
+             success: function(results){
+               $('#car_ex').html(results);
+
+              var div = document.getElementById('pay_state');
+
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + "<span style='color: red'>"+"Results:".fontsize(6) ;
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + '______________________________________________________________________';
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + "<span style='color:blue'>"+"Car Check:".fontsize(4) ;
+              div.innerHTML = div.innerHTML +  results.g1_pic;
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + '______________________________________________________________________';
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + "<span style='color:blue'>"+"Damage Check:".fontsize(4) ;
+              div.innerHTML = div.innerHTML +  results.g2_pic;
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + '______________________________________________________________________';
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + "<span style='color:blue'>"+"Location:".fontsize(4) ;
+              div.innerHTML = div.innerHTML +  results.loc;
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + '______________________________________________________________________';
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + "<span style='color:blue'>"+"Severity:".fontsize(4) ;
+              div.innerHTML = div.innerHTML +  results.sev;
+              div.innerHTML = div.innerHTML + '<br/>';
+              div.innerHTML = div.innerHTML + '______________________________________________________________________';
+
+
+
+             }
+      });
+    });
+  });
+  </script>
+
+</div>
+<!-- </div> <br> -->
+<!-- {% endif %} -->
+
+<div class="result">
+  <table>
+  	<tr style="background-color: yellow">
+  		<th>ID</th>
+  		<th>Statement Date </th>
+  		<th>Payment Date</th>
+  		<th>Payment Amount  </th>
+  		<th>Payment Method </th>
+  		<th>Status</th>
+		<th>Pay Notes </th>
+  	</tr>
+  	{% for payments in paymentinfo %}
+	<tr style="background-color: #90ee90"> 
+		<td style="padding: 5px"> {{payments.id}} </td>
+		<td style="padding: 5px"> {{payments.statementperiod}} </td>
+		<td style="padding: 5px"> {{payments.paymentdate}} </td>
+		<td style="padding: 5px"> {{payments.paymentamount}} </td>
+		<td style="padding: 5px"> {{payments.paymentmethod}} </td>
+		<td style="padding: 5px"> {{payments.Status}} </td>
+		<td style="padding: 5px"> {{payments.paynote}} </td>
+	</tr>
+   
+     
+  {% endfor %}
+	
+  </table>
+  <!-- {{total}} -->
+  {% load humanize %}
+  {{totalpayment }}
+  
+</div>    
+
+
+{% endblock %}
+

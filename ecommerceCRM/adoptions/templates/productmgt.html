@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<div>
+	<h2 style="color: green"> Product Management List </h2>
+	<!-- <h3 style="color:yellow"> <a href="{% url 'home' %}">  Home  </h3>  <br> -->
+	<!-- <div class="search" style="cursor: wait;">
+	<!-- <input type="text" style="float: left" value="item description" name="itemsearch" /> -->
+	<!-- <input placeholder="test"> -->
+	<!-- <input type="submit" value="Search Item" style="float: left" name="itemsearch" onclick="{{Amazoninvsearch.html}" /> -->
+	<!-- </div> --> -->
+	<div class="pos-relative size-a-2 bo-1-rad-22 of-hidden bocl11 m-tb-6">
+				<input class="f1-s-1 cl6 plh9 s-full p-l-25 p-r-45" type="text" name="search" placeholder="Search">
+				<button class="flex-c-c size-a-1 ab-t-r fs-20 cl2 hov-cl10 trans-03">
+					<i class="zmdi zmdi-search"></i>
+				</button>
+			</div>
+	<br> <br> <br>
+	<table>
+		<tr style="background-color: yellow">
+			<th> Sl.No </th>
+			<th> SKU </th>
+			<th> Description </th>
+			<th> ID </th>
+			<th> Link </th>
+			<th> StockInfo </th>
+			<th> Qty </th>
+			<th> Cost </th>
+			<th> Promo End </th>
+			<th> Reorder </th>
+			
+		</tr>
+      
+	{% for item in amazonitem %}
+	<!-- <div class="Amazoninv"> -->
+		<form action="get">
+<tr style="background-color: #90ee90; width:80%">
+	    <td contenteditable="true" style="padding: 5px" > {{ item.id}} </td>
+		<td contenteditable="true" style="padding: 5px" > {{ item.SKU |capfirst }} </td>
+		 <td contenteditable="true" style="padding: 5px" >  {{ item.Description }} </td>
+		<td contenteditable="true" style="padding: 5px" >  {{ item.BanggoodID }} </td>
+		 <td> <a href="{{ item.Website }}">
+		  Product Link 
+	    </a> </td>
+		 <td contenteditable="true" style="padding: 5px" >  {{ item.StockInfo}} </td>
+		 <td contenteditable="true" style="padding: 5px" >  {{ item.Qty }} </td>
+		 <td contenteditable="true" style="padding: 5px" >  Rs.{{ item.Cost}}/- </td>
+		 <td contenteditable="true" style="padding: 5px" >  {{item.promotion_enddate}}
+		 <td contenteditable="true" style="padding: 5px" > Reorder in {{item.reorder}} days </td>
+		 <td><button type="submit" value="{{item.id}}" >Save</button> </td>
+		  </form>
+	<!-- </div>  -->
+</tr>
+	{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

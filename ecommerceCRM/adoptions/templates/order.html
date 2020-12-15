@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n admin_urls %}
+
+
+{% block body_block %}
+<div>
+	<h2 style="color:green">Order List</h2>
+	<!-- <h3 style="color:yellow"> <a href="{% url 'home' %}">  Home  </h3>  <br> -->
+	<table>
+		<tr style="background-color: yellow">
+			<th>ID</th>
+			<th>InvoiceNumber </th>
+			<th>Invoice Date </th>
+			<th>Bill Amount </th>
+			<th>Total Paid </th>
+			<th>Product Information </th>
+			
+		</tr>
+		 <!-- {% with total=0 %} -->
+		 <!-- {% endwith %} -->
+		{% for invitem in invoiceitem %}
+		<!-- if  -->
+			<!-- <td> {{total}} </td> -->
+			<!-- {% with total=0 %} -->
+			<!-- {% endwith %} -->
+
+		<!-- else:	 -->
+		<tr style="background-color: #90ee90">
+			<td contenteditable="true" style="padding: 5px">{{invitem.id}}</td>
+			<td contenteditable="true" style="padding: 5px">{{invitem.invoicenumber}} </td>
+			<td contenteditable="true" style="padding: 5px">{{invitem.invoicedate}} </td>
+			<td contenteditable="true" style="padding: 5px">{{invitem.BillAmount}}</td>
+			<td contenteditable="true" style="padding: 5px">{{invitem.TotalPaid}}</td>
+			<td contenteditable="true" style="padding: 5px">{{invitem.Remark}}</td>
+			
+		</tr>
+
+			
+		{% endfor %}
+
+
+	
+				
+	</table>
+		
+		{{totalbill}} <br>
+		{{totalpaid}}
+		{{test}}	
+</div>
+
+{% endblock %}
