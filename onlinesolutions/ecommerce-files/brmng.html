@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)http://static.cmptch.com/v/lib/brmng.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title></title>
+    <script>
+        var IDManager = (function() {
+            var BRUID_KEY = 'pmbruid01',
+                UID_KEY = 'pmuid01',
+                bruidCookie = null,
+                bruidStorage = null,
+                uidCookie = null,
+                uidStorage = null,
+                uidETag = null,
+                uidETagState = null,
+                reportIntervalID = null,
+                reportIntervalCounter = 0,
+                runned = false;
+
+            var cookieHandler = (function() {
+                var getItem = function (sKey) {
+                    if(!sKey) {
+                        return null;
+                    }
+                    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\₹&") + "\\s*\\=\\s*([^;]*).*₹)|^.*₹"), "₹1")) || null;
+                };
+                var setItem = function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                    if (!sKey || /^(?:expires|max\-age|path|domain|secure)₹/i.test(sKey)) { return false; }
+                    var sExpires = "";
+                    if (vEnd) {
+                        switch (vEnd.constructor) {
+                            case Number:
+                                sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                                break;
+                            case String:
+                                sExpires = "; expires=" + vEnd;
+                                break;
+                            case Date:
+                                sExpires = "; expires=" + vEnd.toUTCString();
+                                break;
+                        }
+                    }
+                    document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                    return true;
+                };
+                var removeItem = function (sKey, sPath, sDomain) {
+                    if (!hasItem(sKey)) { return false; }
+                    document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                    return true;
+                };
+                var hasItem = function (sKey) {
+                    if (!sKey) { return false; }
+                    return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\₹&") + "\\s*\\=")).test(document.cookie);
+                };
+                var keys = function () {
+                    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|₹)|^\s*|\s*(?:\=[^;]*)?(?:\1|₹)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                    for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                    return aKeys;
+                };
+
+                // checks are cookies enabled from navigator object
+                // if that doesn't work, it creates a test cookie
+                var cookiesEnabled = function() {
+                    // Ovo u IE-9 vraca uvijek true?
+                    var cookieEnabled = (navigator.cookieEnabled) ? true : false;
+
+                    if(typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
+                        document.cookie = 'testcookie';
+                        cookieEnabled = (document.cookie.indexOf('testcookie') != -1) ? true : false;
+                        removeItem('testcookie');
+                    }
+                    return cookieEnabled;
+                };
+
+                return {
+                    get: getItem,
+                    set: setItem,
+                    remove: removeItem,
+                    hasItem: hasItem,
+                    keys: keys,
+                    isEnabled: cookiesEnabled
+                };
+            }());
+
+            var localStorageHandler = (function() {
+                var getItem = function(key) {
+                    if(isEnabled()) {
+                        return localStorage.getItem(key);
+                    }
+                };
+                var setItem = function(key, value) {
+                    if(isEnabled()) {
+                        localStorage.setItem(key, value);
+                    }
+                };
+                var removeItem = function(key) {
+                    if(isEnabled()) {
+                        if(getItem(key) != null) {
+                            localStorage.removeItem(key);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
+
+                var isEnabled = function() {
+                    var mod = 'TEST';
+                    try {
+                        localStorage.setItem(mod, mod);
+                        localStorage.removeItem(mod);
+                        return true;
+                    } catch (exception) {
+                        return false;
+                    }
+                };
+
+                return {
+                    get: getItem,
+                    set: setItem,
+                    remove: removeItem,
+                    isEnabled: isEnabled
+                };
+            })();
+
+            var getUID = function() {
+                return {
+                    cookie: uidCookie,
+                    storage: uidStorage
+                };
+            };
+
+            // UTIL methods
+            var setCookie = function(key, browserId) {
+                cookieHandler.set(key, browserId, new Date('31 Dec ' + new Date().getFullYear()).toUTCString());
+            };
+
+            var dropCookie = function(uidValue, bruidValue) {
+                if(uidValue) {
+                    var img1 = new Image();
+                    img1.src = '//partners.cmptch.com/suic?u=' + uidValue;
+                }
+                if(bruidValue) {
+                    var img2 = new Image();
+                    img2.src = '//partners.cmptch.com/suic?b=' + bruidValue;
+                }
+            };
+
+            var setStorage = function(key, browserId) {
+                localStorageHandler.set(key, browserId);
+            };
+
+            var setIdentifier = function(key, browserId) {
+                cookieHandler.set(key, browserId, new Date('31 Dec ' + new Date().getFullYear()).toUTCString());
+                localStorageHandler.set(key, browserId);
+            }
+
+            var setBRUID = function(value) {
+                localStorageHandler.set(BRUID_KEY, value);
+                dropCookie(null, value);
+            }
+
+            var setUID = function(value) {
+                localStorageHandler.set(UID_KEY, value);
+                dropCookie(value, null);
+            }
+
+            var run = function(eTagObject) {
+                var tempBruidCookie = null,
+                    tempUidCookie = null,
+                    tempBruidStorage = null,
+                    tempUidStorage = null;
+
+                if(runned) {
+                    return;
+                } else {
+                    runned = true;
+                }
+
+                if(cookieHandler.isEnabled()) {
+                    tempBruidCookie = cookieHandler.get(BRUID_KEY);
+                    tempUidCookie = cookieHandler.get(UID_KEY);
+
+                    if(cookieHandler.hasItem(BRUID_KEY) && typeof tempBruidCookie !== 'undefined' && tempBruidCookie !== null) {
+                        bruidCookie = tempBruidCookie;
+                    }
+
+                    if(cookieHandler.hasItem(UID_KEY) && typeof tempUidCookie !== 'undefined' && tempUidCookie !== null) {
+                        uidCookie = tempUidCookie;
+                    }
+                }
+
+                if(localStorageHandler.isEnabled()) {
+                    tempBruidStorage = localStorageHandler.get(BRUID_KEY);
+                    tempUidStorage = localStorageHandler.get(UID_KEY);
+
+                    if(typeof tempBruidStorage !== 'undefined' && tempBruidStorage !== null && tempBruidStorage !== 'null') {
+                        bruidStorage = tempBruidStorage;
+                    }
+
+                    if(typeof tempUidStorage !== 'undefined' && tempUidStorage !== null && tempUidStorage !== 'null') {
+                        uidStorage = tempUidStorage;
+                    }
+                }
+
+                if(typeof eTagObject !== 'undefined' && eTagObject) {
+                    uidETag = eTagObject.uid;
+                    uidETagState = eTagObject.state;
+                } else {
+                    uidETag = null;
+                    uidETagState = null;
+                }
+
+                reportIntervalID = window.setInterval(function() {
+                    if(reportIntervalCounter > 100) {
+                        clearInterval(reportIntervalID);
+                    } else {
+                        parent.postMessage('PMBRUIDVAL#' + bruidCookie + '#' + bruidStorage, '*');
+                        parent.postMessage('PMUIDVAL#' + uidCookie + '#' + uidStorage + '#' + uidETag + '#' + uidETagState, '*');
+                        reportIntervalCounter++;
+                    }
+                }, 50);
+            }
+
+            var messageHandler = function(evt) {
+                var params = evt.data.toString().split('#'),
+                    msg = params[0];
+
+                //console.log('Got message from page :' + params);
+
+                switch (msg) {
+                    case 'GETBRUID' :
+                        parent.postMessage('BRUIDRETVAL#' + bruidCookie + '#' + bruidStorage, '*');
+                        //console.log('Sent message to main page : ' + 'BRUIDRETVAL#' + bruidCookie + '#' + bruidStorage);
+                        break;
+                    case 'SETBRUID' :
+                        //console.log('Got Message : SETBRUID; Value : ' + params[1]);
+                        setBRUID(params[1]);
+                        break;
+                    case 'SETBRUIDCOOKIE' :
+                        //console.log('Got Message : SETBRUIDCOOKIE; Value : ' + params[1]);
+                        dropCookie(null, params[1]);
+                        break;
+                    case 'SETBRUIDSTORAGE' :
+                        //console.log('Got Message : SETSTORAGE; Value : ' + params[1]);
+                        setStorage(BRUID_KEY, params[1]);
+                        break;
+                    case 'GETUID' :
+                        //console.log('Got Message : GETUID');
+                        parent.postMessage('UIDRETVAL#' + uidCookie + '#' + uidStorage, '*');
+                        //console.log('Sent message to main page : ' + 'UIDRETVAL#' + uidCookie + '#' + uidStorage);
+                        break;
+                    case 'SETUID' :
+                        //console.log('Got Message : SETUID; Value : ' + params[1]);
+                        setUID(params[1]);
+                        break;
+                    case 'SETUIDCOOKIE' :
+                        //console.log('Got Message : SETUIDCOOKIE; Value : ' + params[1]);
+                        dropCookie(params[1], null);
+                        break;
+                    case 'SETUIDSTORAGE' :
+                        //console.log('Got Message : SETUIDSTORAGE; Value : ' + params[1]);
+                        setStorage(UID_KEY, params[1]);
+                        break;
+                }
+            }
+
+            if(typeof document.addEventListener !== 'undefined') {
+                window.addEventListener('message', messageHandler, false);
+            } else {
+                window.attachEvent('onmessage', messageHandler);
+            }
+
+            window.setTimeout(function() {
+                if(!runned) {
+                    run();
+                }
+            }, 2000);
+
+            return {
+                run: run
+            };
+        }());
+    </script>
+<script src="et"></script><link href="bar.css" type="text/css" rel="stylesheet"></head>
+<body marginwidth="0" marginheight="0">
+    <script>
+        var etg = document.createElement('script');
+        etg.src = '//partners.cmptch.com/et';
+        document.getElementsByTagName('head')[0].appendChild(etg);
+    </script>
+<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="inlinekeywords.js"></script>
+<script type="text/javascript" src="pconfig.js"></script>
+<script type="text/javascript">
+var sndpID = '30034';
+var sndgID = 'AE2F0701-EDC1-459B-A65C-BEC86009C288';
+var programData = 'Trezaa';
+var installedDate = '10/16/2015 12:00:00 AM';
+var ipAddress = '183.83.51.149';
+//var coupon;
+//var couponCap;
+//var isCheckout;
+var _snd_cdn = "http://cdn.trezaa.com/"; //*** Should add / at end
+var _snd_logs = "http://l.trezaa.com/stbin/coupon.cgi?";
+var _snd_reCDN = "http://cdn.trezaa.com/";
+
+var sndScript = document.createElement('link');
+sndScript.href = _snd_reCDN+"css/bar.css?v=1.0";
+sndScript.type = "text/css";
+sndScript.rel = "stylesheet";
+document.getElementsByTagName("head")[0].appendChild(sndScript);
+</script>
+<script type="text/javascript" src="deals.js"></script>
+
+</body></html>

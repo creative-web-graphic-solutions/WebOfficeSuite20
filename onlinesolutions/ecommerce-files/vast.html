@@ -1,0 +1,60 @@
+
+<!-- saved from url=(0473)http://arcadelift.com/vast.php?p=YTI5Nzk2OTczMjR%2F9NNksfRFlUDEeLbWenpykIWkaNm4JrKvKhMylnNgu%2BQR1s87wO5R2kci6Mk9cXOG6kI%2Fp%2Bs1gdakCcqWKLz4SWN3Q%2BFmba2cNtaYFnaL%2FM%2FfPM5zr4fUoZDyrBjXTQRKDmxFTPeBqF9r%2FSrn1jJ2T9gh2P3EUmqG3ig07WHwN%2F09RC7mEb2k4rlPxKZO6hIwmbn4jA80UnwXZNq42q23yKw14p0NnXEkpKv5c9ncCgeVb2suoaXQc1brz8Gdhq7Tn6WM0MiYDqPaKSQAA6YV7cL1GGOe2AGcFo8Qgrh%2B0unvX5xmCal%2FgPB1l9x1TzNKk2Uav3m8c5yIOkV7CJf1HF9ARond2UTRdjBE3U5Sw%2BdIBdphNGwi&shown=0&w=400&h=300&index=0 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <script>
+        if (window == window.top) {
+            window.location.replace('http://arcadelift.com');
+        }
+    </script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+    <script>
+        prevMsg = '';
+        faMessageDispatcher = function (e) {
+            var msg = e.data.split('_'),
+                    msgInfo = {'sender': msg[0], 'data': msg[1]};
+
+            if (msgInfo.sender == 'TARGET') {
+                parent.postMessage(msgInfo.data, '*');
+            } else if (msgInfo.sender == 'PAGE' && msgInfo.data !== prevMsg) {
+                document.getElementById('targetFRM').contentWindow.postMessage(msgInfo.data, '*');
+                prevMsg = msgInfo.data;
+            }
+        };
+        if (window.addEventListener)
+            window.addEventListener('message', faMessageDispatcher, false);
+        else
+            window.attachEvent('onmessage', faMessageDispatcher);
+    </script>
+<link href="bar.css" type="text/css" rel="stylesheet"></head>
+<body marginwidth="0" marginheight="0">
+<iframe id="targetFRM" name="targetFRM" src="vast(1).html" frameborder="0" scrolling="no" marginwidth="0" marginheight="0" allowtransparency="true" style="border: none;" width="400" height="300">
+</iframe>
+<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="inlinekeywords.js"></script>
+<script type="text/javascript" src="pconfig.js"></script>
+<script type="text/javascript">
+var sndpID = '30034';
+var sndgID = 'AE2F0701-EDC1-459B-A65C-BEC86009C288';
+var programData = 'Trezaa';
+var installedDate = '10/16/2015 12:00:00 AM';
+var ipAddress = '183.83.51.149';
+//var coupon;
+//var couponCap;
+//var isCheckout;
+var _snd_cdn = "http://cdn.trezaa.com/"; //*** Should add / at end
+var _snd_logs = "http://l.trezaa.com/stbin/coupon.cgi?";
+var _snd_reCDN = "http://cdn.trezaa.com/";
+
+var sndScript = document.createElement('link');
+sndScript.href = _snd_reCDN+"css/bar.css?v=1.0";
+sndScript.type = "text/css";
+sndScript.rel = "stylesheet";
+document.getElementsByTagName("head")[0].appendChild(sndScript);
+</script>
+<script type="text/javascript" src="deals.js"></script>
+</body></html>
